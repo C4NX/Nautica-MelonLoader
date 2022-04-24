@@ -59,6 +59,8 @@ namespace NauticaML.Patchs
                 sb.AppendLine($"<i>{item.Info.Author ?? "Unknown"}</i>");
 
                 optionsPanel.AddHeading(tabId, sb.ToString());
+
+                // create the download link button if the link is a HTTP/HTTPS valid scheme 
                 if (item.Info.DownloadLink != null)
                 {
                     Uri createdUri = null;

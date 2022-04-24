@@ -2,6 +2,7 @@
 using MelonLoader;
 using NauticaML.GUI;
 using NauticaML.Patchs;
+using NauticaML.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +16,11 @@ namespace NauticaML
 {
     public class NauticaMod : MelonMod
     {
+        public const long DiscordClientId = 843153449922592768;
+
+
+        private DiscordCustomPresence discordCustomPresence;
+
         public static NauticaMod Instance { get; private set; }
 
         public NauticaMod() : base()
@@ -26,7 +32,24 @@ namespace NauticaML
         {
             MelonLogger.Msg($"Loading Nautica...");
             
+            if(PlatformServicesUtils.IsRuntimePluginDllPresent("discord_game_sdk"))
+            {
+                discordCustomPresence = new DiscordCustomPresence(DiscordClientId);
+                discordCustomPresence.SetActivity(new Discord.Activity
+                {
+                    Details = "Testing this mod !"
+                });
+            }
+
             base.OnApplicationStart();
+        }
+
+        public override void OnUpdate()
+        {
+            if (discordCustomPresence != null)
+                discordCustomPresence.Update();
+
+            base.OnUpdate();
         }
 
         public void OnMainMenuStart()
@@ -41,8 +64,6 @@ namespace NauticaML
                 if(lastChildToggle != null)
                     AccessTools.Method(lastChildToggle.GetType(), "Set").Invoke(lastChildToggle, new object[] { true, true });
             });
-
-            throw new Exception("Ahahahahahyuzehfiudhf");
         }
     }
 }
